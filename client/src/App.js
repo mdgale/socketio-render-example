@@ -8,6 +8,7 @@ function App() {
   const [messagesRecieved, setMessagesRecieved] = useState([]);
   const [connectionMade, setConnectionMade] = useState(false);
   const [inputText, setInputText] = useState('');
+  const [nonWebhookResult, setNonWebhookResult] = useState('');
 
   useEffect(() => {
     // Instantiate the socket connection on just initial render.
@@ -36,6 +37,16 @@ function App() {
     setSocket(mySocket);
   }, []);
 
+  const makeHttpCall = async () => {
+    fetch(process.env.REACT_APP_BACKEND_URL + "/")
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        setNonWebhookResult(res.text);
+      });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -44,6 +55,17 @@ function App() {
           style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap' }}
         >
           <p>Connected to server? {connectionMade ? '✅' : '🛑'}</p>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+            paddingBottom: '50px',
+          }}
+        >
+          <button onClick={() => makeHttpCall()}>Make non-webhook call</button>
+          <p style={{paddingLeft: "10px"}}>{nonWebhookResult}</p>
         </div>
 
         <form

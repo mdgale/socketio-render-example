@@ -1,15 +1,40 @@
+const { createServer } = require('http');
 const { Server } = require('socket.io');
 
-// NOTE: you should not use a wildcard CORS config in production.
+let counter = 0;
+
+const httpServer = createServer((req, res) => {
+  if (req.url !== '/') {
+    res.writeHead(404);
+    res.end('Not found');
+    return;
+  }
+  
+  const content = JSON.stringify({ "text": "The count is " + counter});
+  const length = Buffer.byteLength(content);
+
+  res.writeHead(200, {
+    'Content-Type': 'text',
+    'Content-Length': length,
+    // NOTE: you should not use a wildcard CORS config in production.
+    // configure this properly for your needs.
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS, GET',
+    'Access-Control-Max-Age': 2592000,
+  });
+  res.end(content);
+});
+
+// NOTE #1: you should not use a wildcard CORS config in production.
 // configure this properly for your needs.
-const io = new Server(process.env.PORT || 3000, {
+// NOTE #2: using node's http server with socket.io, you need to 
+// have a CORS config for each.
+const io = new Server(httpServer, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
   },
 });
-
-let counter = 0;
 
 // io.on('connection', ...) is the default handler for when a browser
 // makes a connection to the server. Inside of the connection event
@@ -38,3 +63,5 @@ io.on('connection', (socket) => {
     );
   });
 });
+
+httpServer.listen(process.env.PORT || 3000);
