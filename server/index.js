@@ -9,7 +9,6 @@ const io = new Server(process.env.PORT || 3000, {
   },
 });
 
-
 let counter = 0;
 
 // io.on('connection', ...) is the default handler for when a browser
@@ -24,7 +23,7 @@ io.on('connection', (socket) => {
   // was successful.
   socket.emit('connectionSuccess', true);
 
-  // sendData is the eventname for when the client submits to the 
+  // sendData is the eventname for when the client submits to the
   // server. In this example, we take the data, decorate it a bit,
   // and send it back.
   socket.on('sendData', (arg) => {
