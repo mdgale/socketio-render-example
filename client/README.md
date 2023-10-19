@@ -1,3 +1,7 @@
+# Expected Environment Variables
+
+`REACT_APP_BACKEND_URL`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
